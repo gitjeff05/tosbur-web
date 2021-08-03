@@ -1,0 +1,38 @@
+{
+    "cSpell.words": [
+        "rulesets",
+        "tosbur",
+        "vite",
+        "vitejs"
+    ],
+    "javascript.format.enable": false,
+    "prettier.enable": true,
+    "prettier.requireConfig": false,
+    "prettier.documentSelectors": [
+      "**/*.vue",
+      "**/*.js",
+      "**/*.ts"
+    ],
+    "eslint.packageManager": "pnpm",
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "eslint.alwaysShowStatus": true,
+  "[vue]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "eslint.validate": [
+    "javascript",
+    "javascriptreact",
+    "vue"
+  ],
+  "workbench.tree.indent": 18,
+  "breadcrumbs.icons": false,
+  "eslint.codeAction.showDocumentation": {
+    "enable": true
+  },
+  "eslint.format.enable": true,
+  "prettier.printWidth": 500,
+  "prettier.insertPragma": true,
+  "prettier.tabWidth": 2,  
+  "prettier.useEditorConfig": false,
+  "prettier.vueIndentScriptAndStyle": true,
+}

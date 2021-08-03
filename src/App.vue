@@ -1,0 +1,42 @@
+<template>
+  <img alt="Vue logo" src="./assets/logo.png" />
+  <HelloWorld msg="Hello Vue 3 + Vite" :data="store" />
+</template>
+
+<script setup>
+
+import { reactive } from 'vue'
+
+import HelloWorld from './components/HelloWorld.vue'
+
+const store = {
+  state: reactive({
+    dockerVersion: {
+      name: 'Harry'
+    }
+  }),
+  setDockerVersion(newValue) {
+      console.log(newValue)
+    console.info(`setting docker version to ${JSON.stringify(newValue)}`)
+    console.log(this.state)
+    this.state.dockerVersion = newValue;
+  }
+
+}
+
+
+
+// This starter template is using Vue 3 experimental <script setup> SFCs
+// Check out https://github.com/vuejs/rfcs/blob/master/active-rfcs/0040-script-setup.md
+</script>
+
+<style>
+#app {
+  font-family: Avenir, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-align: center;
+  color: #2c3e50;
+  margin-top: 60px;
+}
+</style>
