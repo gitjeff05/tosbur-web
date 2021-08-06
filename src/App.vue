@@ -1,12 +1,25 @@
 <template>
     <img alt="Vue logo" src="./assets/logo.png" />
-    <HelloWorld msg="Hello Vue 3 + Vite" :data="store" />
+    <HelloWorld msg="Tosbur" :data="store" />
 </template>
 
-<script setup>
+<script>
 import { reactive } from 'vue';
-
+import { mocks } from './mocks';
 import HelloWorld from './components/HelloWorld.vue';
+
+/**
+Mock window.tosbur when in vite development mode
+https://vitejs.dev/guide/env-and-mode.html#env-variables-and-modes
+*/
+if (import.meta.env.MODE === 'development') {
+    window.tosbur = mocks;
+} else if (import.meta.env.MODE === 'staging') {
+    console.warn(
+        'App is in staging mode and meant to be tested in Electron. This will not work in a normal browser window.'
+    );
+}
+const { tosbur } = window;
 
 const store = {
     state: reactive({
@@ -16,6 +29,28 @@ const store = {
     }),
     setDockerVersion(newValue) {
         this.state.dockerVersion = newValue;
+    },
+};
+
+export default {
+    components: {
+        HelloWorld,
+    },
+    data() {
+        return { store };
+    },
+    created() {
+        // `this` points to the vm instance
+        return tosbur
+            .getDockerVersion()
+            .then((f) => {
+                console.log('fetched docker version', f);
+                store.setDockerVersion({ name: f.Version });
+            })
+            .catch((e) => {
+                console.error(e);
+                console.error('Could not get docker version');
+            });
     },
 };
 

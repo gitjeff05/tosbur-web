@@ -1,5 +1,5 @@
 {
-    "cSpell.words": ["rulesets", "tosbur", "vite", "vitejs"],
+    "cSpell.words": ["linuxkit", "rulesets", "tosbur", "vite", "vitejs"],
     "javascript.format.enable": false,
     "editor.formatOnSave": true,
     "editor.defaultFormatter": "esbenp.prettier-vscode",
@@ -8,9 +8,11 @@
     "[vue]": {
         "editor.defaultFormatter": "esbenp.prettier-vscode"
     },
+    "[javascript]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
     "workbench.tree.indent": 20,
     "workbench.colorTheme": "Noctis Hibernus",
-    "window.newWindowDimensions": "maximized",
     "window.title": "${activeEditorLong}${separator}${rootName}",
     "breadcrumbs.icons": true,
 
