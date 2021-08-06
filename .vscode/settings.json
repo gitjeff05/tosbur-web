@@ -1,5 +1,13 @@
 {
-    "cSpell.words": ["linuxkit", "rulesets", "tosbur", "vite", "vitejs"],
+    "cSpell.words": [
+        "Windi",
+        "linuxkit",
+        "rulesets",
+        "tosbur",
+        "vite",
+        "vitejs",
+        "windicss"
+    ],
     "javascript.format.enable": false,
     "editor.formatOnSave": true,
     "editor.defaultFormatter": "esbenp.prettier-vscode",
@@ -12,7 +20,7 @@
         "editor.defaultFormatter": "esbenp.prettier-vscode"
     },
     "workbench.tree.indent": 20,
-    "workbench.colorTheme": "Noctis Hibernus",
+    "workbench.colorTheme": "Firefox Dark",
     "window.title": "${activeEditorLong}${separator}${rootName}",
     "breadcrumbs.icons": true,
 
@@ -29,5 +37,10 @@
     "prettier.documentSelectors": ["**/*.vue", "**/*.js", "**/*.ts"],
     "prettier.insertPragma": true,
     "prettier.useEditorConfig": false,
-    "prettier.vueIndentScriptAndStyle": true
+    "prettier.vueIndentScriptAndStyle": true,
+    "windicss.colorDecoratorsType": "border",
+    "windicss.sortOnSave": true,
+    "vetur.format.enable": false,
+
+    "editor.tabCompletion": "onlySnippets"
 }
