@@ -1,6 +1,13 @@
 <template>
     <aside class="sidebar">
-        <button class="icon" @click="setSearchView">
+        <button
+            id="search"
+            ref="searchBox"
+            class="icon"
+            role="button"
+            tab-index="0"
+            @click="setSearchView"
+        >
             <svg
                 id="footer-sample-full"
                 xmlns="http://www.w3.org/2000/svg"
@@ -26,7 +33,7 @@
             </svg>
         </button>
 
-        <button class="icon" @click="setImagesView">
+        <button class="icon" role="button" tab-index="1" @click="setImagesView">
             <svg
                 id="footer-sample-full"
                 xmlns="http://www.w3.org/2000/svg"
@@ -78,7 +85,12 @@
             </svg>
         </button>
 
-        <button class="icon">
+        <button
+            class="icon"
+            role="button"
+            tab-index="2"
+            @click="setContainersView"
+        >
             <svg
                 id="footer-sample-full"
                 xmlns="http://www.w3.org/2000/svg"
@@ -138,7 +150,7 @@ export default {
         data: {
             type: Object,
             default: () => ({
-                state: { view: 'list', dockerVersion: { name: 'Jeff' } },
+                state: { view: 'search', dockerVersion: { name: 'Jeff' } },
             }),
             required: false,
         },
@@ -150,22 +162,36 @@ export default {
         function setImagesView() {
             props.data.setView('images');
         }
+        function setContainersView() {
+            props.data.setView('containers');
+        }
+
         onMounted(() => {
-            console.log(props);
-            console.log(props.data.setView);
             console.log(props.data.state);
             console.log('sidebar mounted!');
         });
         return {
             setSearchView,
             setImagesView,
+            setContainersView,
         };
+    },
+    mounted() {
+        console.log('sidebar mounted!!!');
+        console.log(this);
+        console.log(this.$refs);
+        console.log(this.$refs.searchBox.focus());
     },
 };
 </script>
 
 <style scoped>
 button.icon {
-    @apply p-2 text-2xl font-extrabold;
+    @apply p-2 my-1 text-2xl font-extrabold;
+}
+button:focus {
+    background-color: #132c33;
+    outline: none;
+    @apply ring-2 shadow-xl shadow-gray-900 ring-offset-1 ring-opacity-80 ring-cyan-900;
 }
 </style>

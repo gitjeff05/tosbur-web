@@ -4,7 +4,12 @@
     </header>
     <section class="main-content">
         <sidebar-menu :data="store"></sidebar-menu>
-        <main-content class="content" :data="store.state"></main-content>
+        <main-content
+            class="content"
+            :current-view="store.state.view"
+            :images="store.state.images"
+            :containers="store.state.containers"
+        ></main-content>
     </section>
     <footer>
         <h2>Footer</h2>
@@ -37,9 +42,17 @@ const store = {
         dockerVersion: {
             name: 'Harry',
         },
+        images: [],
+        containers: [],
     }),
     setDockerVersion(newValue) {
         this.state.dockerVersion = newValue;
+    },
+    setDockerImages(newValue) {
+        this.state.images = newValue;
+    },
+    setContainers(newValue) {
+        this.state.containers = newValue;
     },
     setView(newValue) {
         this.state.view = newValue;
@@ -61,6 +74,17 @@ export default {
             .then((f) => {
                 console.log('fetched docker version', f);
                 store.setDockerVersion({ name: f.Version });
+                return tosbur.getImages();
+            })
+            .then((f) => {
+                console.log(f);
+                store.setDockerImages(f);
+                return tosbur.getContainers();
+            })
+            .then((f) => {
+                console.log(f);
+                store.setContainers(f);
+                return;
             })
             .catch((e) => {
                 console.error(e);
@@ -90,7 +114,7 @@ header > h1 {
 }
 .main-content {
     @apply h-screen flex flex-row;
-    background-color: #e5e5e5;
+    background-color: #eeeeee;
 }
 .content {
     @apply w-full flex-grow;

@@ -1,7 +1,6 @@
 <template>
     <h1>{{ msg }}</h1>
     <h2>{{ data.state.dockerVersion.name }}</h2>
-
     <button type="button" @click="getDocker">get docker</button>
 </template>
 
