@@ -9,6 +9,7 @@
             :current-view="store.state.view"
             :images="store.state.images"
             :containers="store.state.containers"
+            :data="store"
         ></main-content>
     </section>
     <footer>
@@ -57,6 +58,13 @@ const store = {
     setView(newValue) {
         this.state.view = newValue;
     },
+    async startContainer(val) {
+        console.log('attempting to start container', val);
+        const createContainer = await tosbur.createContainer({ image: val });
+        const container = await tosbur.startContainer(createContainer);
+
+        console.log('attempt to start container', container);
+    },
 };
 
 export default {
@@ -77,12 +85,12 @@ export default {
                 return tosbur.getImages();
             })
             .then((f) => {
-                console.log(f);
+                console.log('fetched images', f);
                 store.setDockerImages(f);
                 return tosbur.getContainers();
             })
             .then((f) => {
-                console.log(f);
+                console.log('fetched containers', f);
                 store.setContainers(f);
                 return;
             })
@@ -90,6 +98,10 @@ export default {
                 console.error(e);
                 console.error('Could not get docker version');
             });
+    },
+    beforeUpdate() {
+        console.log('App updated');
+        console.log(store);
     },
 };
 

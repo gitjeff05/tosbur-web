@@ -6,6 +6,7 @@
             class="icon"
             role="button"
             tab-index="0"
+            :class="{ active: isSearchActive }"
             @click="setSearchView"
         >
             <svg
@@ -33,7 +34,14 @@
             </svg>
         </button>
 
-        <button class="icon" role="button" tab-index="1" @click="setImagesView">
+        <button
+            id="images"
+            class="icon"
+            role="button"
+            tab-index="1"
+            :class="{ active: isImagesActive }"
+            @click="setImagesView"
+        >
             <svg
                 id="footer-sample-full"
                 xmlns="http://www.w3.org/2000/svg"
@@ -89,6 +97,7 @@
             class="icon"
             role="button"
             tab-index="2"
+            :class="{ active: isContainersActive }"
             @click="setContainersView"
         >
             <svg
@@ -144,7 +153,7 @@
 </template>
 
 <script>
-import { onMounted } from 'vue';
+import { onMounted, onUpdated, computed } from 'vue';
 export default {
     props: {
         data: {
@@ -170,10 +179,32 @@ export default {
             console.log(props.data.state);
             console.log('sidebar mounted!');
         });
+        onUpdated(() => {
+            console.log('sidebar updated');
+            console.log(props);
+        });
+        // const activeSidebar = () => {
+        //     const isImages = props.data.state.view === 'images';
+        //     console.log('isImages', isImages);
+        //     return isImages;
+        // }
+        const isSearchActive = computed(() => {
+            return props.data.state.view === 'search';
+        });
+        const isImagesActive = computed(() => {
+            return props.data.state.view === 'images';
+        });
+        const isContainersActive = computed(() => {
+            return props.data.state.view === 'containers';
+        });
+
         return {
             setSearchView,
             setImagesView,
             setContainersView,
+            isSearchActive,
+            isImagesActive,
+            isContainersActive,
         };
     },
     mounted() {
@@ -189,7 +220,7 @@ export default {
 button.icon {
     @apply p-2 my-1 text-2xl font-extrabold;
 }
-button:focus {
+button.active {
     background-color: #132c33;
     outline: none;
     @apply ring-2 shadow-xl shadow-gray-900 ring-offset-1 ring-opacity-80 ring-cyan-900;

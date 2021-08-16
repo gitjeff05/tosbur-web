@@ -16,11 +16,20 @@ We do not need complex setups for this to work well. Any tool that can build a w
 pnpx create-vite tosbur-web --template vue
 ```
 
-### Running
+### Running standalone app
 
 ```bash
 pnpm dev
 ```
+
+### Running in staging mode
+
+This is meant to be run inside of the tosbur-vue electron app with `yarn electron:serve`
+
+```bash
+pnpm stage
+```
+
 ### Build
 
 ```bash
@@ -30,23 +39,28 @@ pnpm build
 ## How is this application imported into the Main application?
 
 ```javascript
-
 // Main electron process (background.js)
 
 win = new BrowserWindow({
-  webPreferences: {
-    preload: preloadPath
-  }
+    webPreferences: {
+        preload: preloadPath,
+    },
 });
 
 // ...
 
 if (process.env.WEBPACK_DEV_SERVER_URL) {
-  // Load the url of the dev server if in development mode
-  await win.loadURL(process.env.WEBPACK_DEV_SERVER_URL);
+    // Load the url of the dev server if in development mode
+    await win.loadURL(process.env.WEBPACK_DEV_SERVER_URL);
 } else {
-  createProtocol('app');
-  // Load the index.html when not in development
-  win.loadURL('app://./index.html');
+    createProtocol('app');
+    // Load the index.html when not in development
+    win.loadURL('app://./index.html');
 }
 ```
+
+# Resources
+
+## Icons
+
+[Iconify clarity](https://icon-sets.iconify.design/clarity/container-volume-line/)

@@ -7,10 +7,35 @@
                     v-for="post in images"
                     :key="post.Id"
                     :title="post.Size"
-                    class="flex flex-row bg-gray-50 shadow my-2 p-4 py-3 items-center justify-between"
+                    class="
+                        flex flex-row
+                        bg-gray-50
+                        shadow
+                        my-2
+                        p-4
+                        py-3
+                        items-center
+                        justify-between
+                    "
                 >
-                    <span>{{ post.RepoTags[0] }}</span
-                    ><span> {{ computeSize(post.Size) }}</span>
+                    <span class="flex w-2/3 justify-between">
+                        <span>{{ post.RepoTags[0] }}</span
+                        ><span> {{ computeSize(post.Size) }}</span></span
+                    >
+                    <button
+                        class="
+                            text-sm
+                            p-1
+                            px-3
+                            text-cool-gray-200
+                            inline-flex
+                            items-center
+                            start-image
+                        "
+                        @click="doThings(post.Id)"
+                    >
+                        start
+                    </button>
                 </li>
             </ul>
         </div>
@@ -24,7 +49,16 @@
                     v-for="post in containers"
                     :key="post.Id"
                     :title="post.Size"
-                    class="flex flex-row bg-gray-50 shadow my-2 p-4 py-3 items-center justify-between"
+                    class="
+                        flex flex-row
+                        bg-gray-50
+                        shadow
+                        my-2
+                        p-4
+                        py-3
+                        items-center
+                        justify-between
+                    "
                 >
                     <div
                         class="flex flex-row w-3/4 items-center justify-between"
@@ -32,7 +66,7 @@
                         <span>{{ post.Names[0] }}</span
                         ><span> {{ post.Image }}</span>
                     </div>
-                    <span> {{ post.Status }}</span>
+                    <span> {{ post.State }}</span>
                 </li>
             </ul>
         </div>
@@ -43,6 +77,13 @@
 import { onUpdated } from 'vue';
 export default {
     props: {
+        data: {
+            type: Object,
+            default: () => ({
+                state: { view: 'images', dockerVersion: { name: 'Jeff' } },
+            }),
+            required: false,
+        },
         currentView: {
             type: String,
             default: 'list',
@@ -67,13 +108,16 @@ export default {
         onUpdated(() => {
             console.log(`Updated main with ${props.currentView}`);
         });
+        const doThings = (id) => {
+            props.data.startContainer(id);
+        };
         const computeSize = (size) => {
             const sizeRounded = size / 1000000;
             return sizeRounded < 1000
                 ? `${Number.parseFloat(sizeRounded).toFixed(2)} MB`
                 : `${Number.parseFloat(size / 1000000000).toFixed(2)} GB`;
         };
-        return { computeSize };
+        return { computeSize, doThings };
     },
 };
 </script>
@@ -81,5 +125,8 @@ export default {
 <style scoped>
 main {
     @apply h-screen p-6;
+}
+.start-image {
+    background-color: #132c335c;
 }
 </style>
