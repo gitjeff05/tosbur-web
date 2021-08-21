@@ -10,6 +10,8 @@
             :images="store.state.images"
             :containers="store.state.containers"
             :data="store"
+            @start="startContainer"
+            @attach="attachContainer"
         ></main-content>
     </section>
     <footer>
@@ -58,13 +60,12 @@ const store = {
     setView(newValue) {
         this.state.view = newValue;
     },
-    async startContainer(val) {
-        console.log('attempting to start container', val);
-        const createContainer = await tosbur.createContainer({ image: val });
-        const container = await tosbur.startContainer(createContainer);
+    // async startContainer(val) {
+    //     const createContainer = await tosbur.createContainer({ image: val });
+    //     const container = await tosbur.startContainer(createContainer);
 
-        console.log('attempt to start container', container);
-    },
+    //     console.log('attempt to start container', container);
+    // },
 };
 
 export default {
@@ -103,6 +104,28 @@ export default {
         console.log('App updated');
         console.log(store);
     },
+    methods: {
+        async startContainer(val) {
+            console.log('creating and starting container', val);
+            const createContainer = await tosbur.createContainer({
+                image: val,
+            });
+            console.log(createContainer);
+            const container = await tosbur.startContainer(createContainer);
+            console.log('attempt to start container', container);
+        },
+        async attachContainer(val) {
+            console.log('attaching to container', val);
+            return tosbur
+                .attachToContainer({ Id: val })
+                .then((f) => {
+                    console.log(f);
+                })
+                .catch((e) => {
+                    console.error(e);
+                });
+        },
+    },
 };
 
 // This starter template is using Vue 3 experimental <script setup> SFCs
@@ -132,8 +155,9 @@ header > h1 {
     @apply w-full flex-grow;
 }
 .sidebar {
-    @apply h-full overflow-hidden flex flex-col flex-shrink-0 justify-start text-cool-gray-100 items-center w-16 p-1 z-10 shadow py-4 border-r-1;
-    min-width: 48px;
+    @apply h-full overflow-hidden flex flex-col flex-shrink-0 justify-start text-cool-gray-100 items-center p-1 z-10 shadow py-4 border-r-1;
+    width: 36px;
+    min-width: 36px;
     background-color: #126e82;
     border-color: #132c33;
 }

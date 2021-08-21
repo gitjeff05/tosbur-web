@@ -23,16 +23,8 @@
                         ><span> {{ computeSize(post.Size) }}</span></span
                     >
                     <button
-                        class="
-                            text-sm
-                            p-1
-                            px-3
-                            text-cool-gray-200
-                            inline-flex
-                            items-center
-                            start-image
-                        "
-                        @click="doThings(post.Id)"
+                        class="image-container-action start-image"
+                        @click="$emit('start', post.Id)"
                     >
                         start
                     </button>
@@ -66,7 +58,16 @@
                         <span>{{ post.Names[0] }}</span
                         ><span> {{ post.Image }}</span>
                     </div>
-                    <span> {{ post.State }}</span>
+                    <span class="flex flex-col">
+                        <span>{{ post.State }}</span
+                        ><span>{{ post.Status }}</span></span
+                    >
+                    <button
+                        class="image-container-action attach-container"
+                        @click="$emit('attach', post.Id)"
+                    >
+                        attach
+                    </button>
                 </li>
             </ul>
         </div>
@@ -104,20 +105,18 @@ export default {
             required: false,
         },
     },
+    emits: ['start', 'attach'],
     setup(props) {
         onUpdated(() => {
             console.log(`Updated main with ${props.currentView}`);
         });
-        const doThings = (id) => {
-            props.data.startContainer(id);
-        };
         const computeSize = (size) => {
             const sizeRounded = size / 1000000;
             return sizeRounded < 1000
                 ? `${Number.parseFloat(sizeRounded).toFixed(2)} MB`
                 : `${Number.parseFloat(size / 1000000000).toFixed(2)} GB`;
         };
-        return { computeSize, doThings };
+        return { computeSize };
     },
 };
 </script>
@@ -126,7 +125,13 @@ export default {
 main {
     @apply h-screen p-6;
 }
+.image-container-action {
+    @apply text-sm p-1 px-3 text-cool-gray-200 inline-flex items-center;
+}
 .start-image {
-    background-color: #132c335c;
+    background-color: #132c33;
+}
+.attach-container {
+    background-color: #132c33;
 }
 </style>

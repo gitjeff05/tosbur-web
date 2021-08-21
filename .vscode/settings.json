@@ -20,7 +20,7 @@
         "editor.defaultFormatter": "esbenp.prettier-vscode"
     },
     "workbench.tree.indent": 20,
-    "workbench.colorTheme": "Firefox Dark",
+    "workbench.colorTheme": "Community Material Theme Ocean",
     "window.title": "${activeEditorLong}${separator}${rootName}",
     "breadcrumbs.icons": true,
 
@@ -42,5 +42,6 @@
     "windicss.sortOnSave": true,
     "vetur.format.enable": false,
 
-    "editor.tabCompletion": "onlySnippets"
+    "editor.tabCompletion": "onlySnippets",
+    "vetur.validation.style": false
 }

@@ -18,7 +18,7 @@
                 width="1em"
                 height="1em"
                 preserveAspectRatio="xMidYMid meet"
-                viewBox="0 0 36 36"
+                viewBox="0 0 40 40"
                 class="iconify iconify--clarity"
             >
                 <path
@@ -51,7 +51,7 @@
                 width="1em"
                 height="1em"
                 preserveAspectRatio="xMidYMid meet"
-                viewBox="0 0 36 36"
+                viewBox="0 0 40 40"
                 class="iconify iconify--clarity"
             >
                 <circle
@@ -109,7 +109,7 @@
                 width="1em"
                 height="1em"
                 preserveAspectRatio="xMidYMid meet"
-                viewBox="0 0 36 36"
+                viewBox="0 0 40 40"
                 class="iconify iconify--clarity"
             >
                 <path
@@ -153,7 +153,7 @@
 </template>
 
 <script>
-import { onMounted, onUpdated, computed } from 'vue';
+import { computed } from 'vue';
 export default {
     props: {
         data: {
@@ -174,30 +174,15 @@ export default {
         function setContainersView() {
             props.data.setView('containers');
         }
-
-        onMounted(() => {
-            console.log(props.data.state);
-            console.log('sidebar mounted!');
-        });
-        onUpdated(() => {
-            console.log('sidebar updated');
-            console.log(props);
-        });
-        // const activeSidebar = () => {
-        //     const isImages = props.data.state.view === 'images';
-        //     console.log('isImages', isImages);
-        //     return isImages;
-        // }
-        const isSearchActive = computed(() => {
-            return props.data.state.view === 'search';
-        });
-        const isImagesActive = computed(() => {
-            return props.data.state.view === 'images';
-        });
-        const isContainersActive = computed(() => {
-            return props.data.state.view === 'containers';
-        });
-
+        const isSearchActive = computed(
+            () => props.data.state.view === 'search'
+        );
+        const isImagesActive = computed(
+            () => props.data.state.view === 'images'
+        );
+        const isContainersActive = computed(
+            () => props.data.state.view === 'containers'
+        );
         return {
             setSearchView,
             setImagesView,
@@ -207,18 +192,12 @@ export default {
             isContainersActive,
         };
     },
-    mounted() {
-        console.log('sidebar mounted!!!');
-        console.log(this);
-        console.log(this.$refs);
-        console.log(this.$refs.searchBox.focus());
-    },
 };
 </script>
 
 <style scoped>
 button.icon {
-    @apply p-2 my-1 text-2xl font-extrabold;
+    @apply p-3 my-1 text-xl font-extrabold;
 }
 button.active {
     background-color: #132c33;

@@ -225,17 +225,17 @@ function timeout(ms) {
 }
 
 async function getDockerVersion() {
-    await timeout(2000);
+    await timeout(1000);
     return dockerVersionResponse;
 }
 
 async function getImages() {
-    await timeout(2000);
+    await timeout(1000);
     return dockerImagesResponse;
 }
 
 async function getContainers() {
-    await timeout(2000);
+    await timeout(1000);
     return dockerContainersResponse;
 }
 
