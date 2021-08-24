@@ -3,27 +3,24 @@
         <h1>Tosbur</h1>
     </header>
     <section class="main-content">
-        <sidebar-menu :data="store"></sidebar-menu>
+        <sidebar-menu :state="state" @change-view="changeView"></sidebar-menu>
         <main-content
             class="content"
-            :current-view="store.state.view"
-            :images="store.state.images"
-            :containers="store.state.containers"
-            :data="store"
-            @start="startContainer"
-            @attach="attachContainer"
+            :current-view="state.view"
+            :images="imagesWithInfo"
+            :image-inspections="state.imageInspect"
+            :containers="state.containers"
+            @start-container="startContainer"
+            @attach-to-container="attachContainer"
         ></main-content>
     </section>
-    <footer>
-        <h2>Footer</h2>
-    </footer>
 </template>
 
 <script>
-import { reactive } from 'vue';
 import { mocks } from './mocks';
 import SidebarMenu from './components/SidebarMenu.vue';
 import MainContent from './components/MainContent.vue';
+import store from './store.js';
 
 /**
 Mock window.tosbur when in vite development mode
@@ -36,62 +33,56 @@ if (import.meta.env.MODE === 'development') {
 }
 const { tosbur } = window;
 
-/**
-Application state
-*/
-const store = {
-    state: reactive({
-        view: 'search',
-        dockerVersion: {
-            name: 'Harry',
-        },
-        images: [],
-        containers: [],
-    }),
-    setDockerVersion(newValue) {
-        this.state.dockerVersion = newValue;
-    },
-    setDockerImages(newValue) {
-        this.state.images = newValue;
-    },
-    setContainers(newValue) {
-        this.state.containers = newValue;
-    },
-    setView(newValue) {
-        this.state.view = newValue;
-    },
-    // async startContainer(val) {
-    //     const createContainer = await tosbur.createContainer({ image: val });
-    //     const container = await tosbur.startContainer(createContainer);
-
-    //     console.log('attempt to start container', container);
-    // },
-};
-
 export default {
     components: {
         SidebarMenu,
         MainContent,
     },
     data() {
-        return { store };
+        return store;
+    },
+    computed: {
+        imagesWithInfo() {
+            return this.state.images.map((image) => {
+                const inspect = this.state.imagesInspect.find(
+                    (i) => i.Id === image.Id
+                );
+                console.log('images computed ', inspect);
+                return {
+                    RepoTags: image.RepoTags,
+                    Id: image.Id,
+                    Size: image.Size,
+                    Config: inspect?.Config,
+                };
+            });
+        },
     },
     created() {
         // `this` points to the vm instance
         return tosbur
             .getDockerVersion()
             .then((f) => {
-                console.log('fetched docker version', f);
+                console.log('Fetched docker version', f);
                 store.setDockerVersion({ name: f.Version });
                 return tosbur.getImages();
             })
-            .then((f) => {
-                console.log('fetched images', f);
-                store.setDockerImages(f);
-                return tosbur.getContainers();
+            .then((images) => {
+                console.log('Fetched images', images);
+                store.setDockerImages(images);
+                return images;
             })
+            .then((images) => {
+                const imageInspectPromises = images.map((i) =>
+                    tosbur.getImageInspect(i.Id)
+                );
+                return Promise.all(imageInspectPromises).then((response) => {
+                    store.setInspectImages(response);
+                    return response;
+                });
+            })
+            .then(tosbur.getContainers)
             .then((f) => {
-                console.log('fetched containers', f);
+                console.log('Fetched containers', f);
                 store.setContainers(f);
                 return;
             })
@@ -100,22 +91,19 @@ export default {
                 console.error('Could not get docker version');
             });
     },
-    beforeUpdate() {
-        console.log('App updated');
-        console.log(store);
-    },
     methods: {
+        changeView(view) {
+            store.setView(view);
+        },
         async startContainer(val) {
-            console.log('creating and starting container', val);
+            console.log('Creating and starting container', val);
             const createContainer = await tosbur.createContainer({
                 image: val,
             });
-            console.log(createContainer);
-            const container = await tosbur.startContainer(createContainer);
-            console.log('attempt to start container', container);
+            return await tosbur.startContainer(createContainer);
         },
         async attachContainer(val) {
-            console.log('attaching to container', val);
+            console.log('Attaching to container', val);
             return tosbur
                 .attachToContainer({ Id: val })
                 .then((f) => {
@@ -153,6 +141,7 @@ header > h1 {
 }
 .content {
     @apply w-full flex-grow;
+    overflow-y: scroll;
 }
 .sidebar {
     @apply h-full overflow-hidden flex flex-col flex-shrink-0 justify-start text-cool-gray-100 items-center p-1 z-10 shadow py-4 border-r-1;

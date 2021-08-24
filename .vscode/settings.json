@@ -1,8 +1,12 @@
 {
     "cSpell.words": [
+        "Domainname",
         "Windi",
+        "aufs",
+        "busybox",
         "linuxkit",
         "rulesets",
+        "sbin",
         "tosbur",
         "vite",
         "vitejs",
@@ -20,7 +24,7 @@
         "editor.defaultFormatter": "esbenp.prettier-vscode"
     },
     "workbench.tree.indent": 20,
-    "workbench.colorTheme": "Community Material Theme Ocean",
+    "workbench.colorTheme": "Default Light+",
     "window.title": "${activeEditorLong}${separator}${rootName}",
     "breadcrumbs.icons": true,
 

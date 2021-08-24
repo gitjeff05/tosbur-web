@@ -7,27 +7,53 @@
                     v-for="post in images"
                     :key="post.Id"
                     :title="post.Size"
-                    class="
-                        flex flex-row
-                        bg-gray-50
-                        shadow
-                        my-2
-                        p-4
-                        py-3
-                        items-center
-                        justify-between
-                    "
+                    class="flex flex-col bg-gray-50 shadow my-2 p-4 py-3"
                 >
-                    <span class="flex w-2/3 justify-between">
-                        <span>{{ post.RepoTags[0] }}</span
-                        ><span> {{ computeSize(post.Size) }}</span></span
+                    <div class="flex flex-row items-center justify-between">
+                        <span class="flex w-2/3 justify-between">
+                            <span>{{ post.RepoTags[0] }}</span
+                            ><span> {{ computeSize(post.Size) }}</span></span
+                        >
+                        <button
+                            class="image-container-action start-image"
+                            @click="$emit('start-container', post.Id)"
+                        >
+                            start
+                        </button>
+                    </div>
+                    <div
+                        v-if="post.Config.Entrypoint ?? false"
+                        class="text-sm info entrypoint"
                     >
-                    <button
-                        class="image-container-action start-image"
-                        @click="$emit('start', post.Id)"
+                        <span
+                            >Entrypoint:
+                            <span class="font-mono text-indigo-700">{{
+                                post.Config.Entrypoint.join(' ')
+                            }}</span></span
+                        >
+                    </div>
+                    <div
+                        v-if="post.Config.Cmd ?? false"
+                        class="text-sm info cmd"
                     >
-                        start
-                    </button>
+                        <span
+                            >Cmd:
+                            <span class="font-mono text-indigo-700">{{
+                                post.Config.Cmd.join(' ')
+                            }}</span></span
+                        >
+                    </div>
+                    <div
+                        v-if="post.Config.ExposedPorts ?? false"
+                        class="text-sm info ports"
+                    >
+                        <span
+                            >ExposedPorts:
+                            <span class="font-mono text-indigo-700">{{
+                                post.Config.ExposedPorts
+                            }}</span></span
+                        >
+                    </div>
                 </li>
             </ul>
         </div>
@@ -64,7 +90,7 @@
                     >
                     <button
                         class="image-container-action attach-container"
-                        @click="$emit('attach', post.Id)"
+                        @click="$emit('attach-to-container', post.Id)"
                     >
                         attach
                     </button>
@@ -78,13 +104,6 @@
 import { onUpdated } from 'vue';
 export default {
     props: {
-        data: {
-            type: Object,
-            default: () => ({
-                state: { view: 'images', dockerVersion: { name: 'Jeff' } },
-            }),
-            required: false,
-        },
         currentView: {
             type: String,
             default: 'list',
@@ -105,10 +124,11 @@ export default {
             required: false,
         },
     },
-    emits: ['start', 'attach'],
+    emits: ['start-container', 'attach-to-container'],
     setup(props) {
         onUpdated(() => {
             console.log(`Updated main with ${props.currentView}`);
+            console.log(props.images);
         });
         const computeSize = (size) => {
             const sizeRounded = size / 1000000;
@@ -123,7 +143,7 @@ export default {
 
 <style scoped>
 main {
-    @apply h-screen p-6;
+    @apply h-screen p-6 pb-10;
 }
 .image-container-action {
     @apply text-sm p-1 px-3 text-cool-gray-200 inline-flex items-center;

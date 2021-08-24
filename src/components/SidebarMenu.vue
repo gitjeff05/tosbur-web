@@ -7,7 +7,7 @@
             role="button"
             tab-index="0"
             :class="{ active: isSearchActive }"
-            @click="setSearchView"
+            @click="$emit('change-view', 'search')"
         >
             <svg
                 id="footer-sample-full"
@@ -40,7 +40,7 @@
             role="button"
             tab-index="1"
             :class="{ active: isImagesActive }"
-            @click="setImagesView"
+            @click="$emit('change-view', 'images')"
         >
             <svg
                 id="footer-sample-full"
@@ -98,7 +98,7 @@
             role="button"
             tab-index="2"
             :class="{ active: isContainersActive }"
-            @click="setContainersView"
+            @click="$emit('change-view', 'containers')"
         >
             <svg
                 id="footer-sample-full"
@@ -155,38 +155,25 @@
 <script>
 import { computed } from 'vue';
 export default {
+    // just need state and view?
     props: {
-        data: {
+        state: {
             type: Object,
             default: () => ({
-                state: { view: 'search', dockerVersion: { name: 'Jeff' } },
+                view: 'search',
+                dockerVersion: { name: 'Jeff' },
             }),
             required: false,
         },
     },
+    emits: ['change-view'],
     setup(props) {
-        function setSearchView() {
-            props.data.setView('search');
-        }
-        function setImagesView() {
-            props.data.setView('images');
-        }
-        function setContainersView() {
-            props.data.setView('containers');
-        }
-        const isSearchActive = computed(
-            () => props.data.state.view === 'search'
-        );
-        const isImagesActive = computed(
-            () => props.data.state.view === 'images'
-        );
+        const isSearchActive = computed(() => props.state.view === 'search');
+        const isImagesActive = computed(() => props.state.view === 'images');
         const isContainersActive = computed(
-            () => props.data.state.view === 'containers'
+            () => props.state.view === 'containers'
         );
         return {
-            setSearchView,
-            setImagesView,
-            setContainersView,
             isSearchActive,
             isImagesActive,
             isContainersActive,

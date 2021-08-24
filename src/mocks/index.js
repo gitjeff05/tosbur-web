@@ -21,6 +21,179 @@ const dockerVersionResponse = {
     BuildTime: '2020-06-22T15:49:27.000000000+00:00',
 };
 
+const dockerImageInspectResponse = [
+    {
+        Id: 'sha256:e216a057b1cb1efc11f8a268f37ef62083e70b1b38323ba252e25ac88904a7e8',
+        Container:
+            'cb91e48a60d01f1e27028b4fc6819f4f290b3cf12496c8176ec714d0d390984a',
+        Comment: '',
+        Os: 'linux',
+        Architecture: 'amd64',
+        Parent: 'sha256:91e54dfb11794fad694460162bf0cb0a4fa710cfa3f60979c177d920813e267c',
+        ContainerConfig: {
+            Tty: false,
+            Hostname: 'e611e15f9c9d',
+            Domainname: '',
+            AttachStdout: false,
+            PublishService: '',
+            AttachStdin: false,
+            OpenStdin: false,
+            StdinOnce: false,
+            NetworkDisabled: false,
+            OnBuild: [],
+            Image: '91e54dfb11794fad694460162bf0cb0a4fa710cfa3f60979c177d920813e267c',
+            User: '',
+            WorkingDir: '',
+            MacAddress: '',
+            AttachStderr: false,
+            Labels: {
+                'com.example.license': 'GPL',
+                'com.example.version': '1.0',
+                'com.example.vendor': 'Acme',
+            },
+            Env: [
+                'PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin',
+            ],
+            Cmd: [
+                '/bin/sh',
+                '-c',
+                '#(nop) LABEL com.example.vendor=Acme com.example.license=GPL com.example.version=1.0',
+            ],
+        },
+        DockerVersion: '1.9.0-dev',
+        VirtualSize: 188359297,
+        Size: 0,
+        Author: '',
+        Created: '2015-09-10T08:30:53.26995814Z',
+        GraphDriver: {
+            Name: 'aufs',
+            Data: {},
+        },
+        RepoDigests: [
+            'localhost:5000/test/busybox/example@sha256:cbbf2f9a99b47fc460d422812b6a5adff7dfee951d8fa2e4a98caa0382cfbdbf',
+        ],
+        RepoTags: ['example:1.0', 'example:latest', 'example:stable'],
+        Config: {
+            Image: '91e54dfb11794fad694460162bf0cb0a4fa710cfa3f60979c177d920813e267c',
+            NetworkDisabled: false,
+            OnBuild: [],
+            StdinOnce: false,
+            PublishService: '',
+            AttachStdin: false,
+            OpenStdin: false,
+            Domainname: '',
+            AttachStdout: false,
+            Tty: false,
+            Hostname: 'e611e15f9c9d',
+            Cmd: ['/bin/bash'],
+            Env: [
+                'PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin',
+            ],
+            Labels: {
+                'com.example.vendor': 'Acme',
+                'com.example.version': '1.0',
+                'com.example.license': 'GPL',
+            },
+            MacAddress: '',
+            AttachStderr: false,
+            WorkingDir: '',
+            User: '',
+        },
+        RootFS: {
+            Type: 'layers',
+            Layers: [
+                'sha256:1834950e52ce4d5a88a1bbd131c537f4d0e56d10ff0dd69e66be3b7dfa9df7e6',
+                'sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef',
+            ],
+        },
+    },
+    {
+        Id: 'sha256:3e314f95dcace0f5e4fd37b10862fe8398e3c60ed36600bc0ca5fda78b087175',
+        Container:
+            'cb91e48a60d01f1e27028b4fc6819f4f290b3cf12496c8176ec714d0d390984a',
+        Comment: '',
+        Os: 'linux',
+        Architecture: 'amd64',
+        Parent: 'sha256:91e54dfb11794fad694460162bf0cb0a4fa710cfa3f60979c177d920813e267c',
+        ContainerConfig: {
+            Tty: false,
+            Hostname: 'e611e15f9c9d',
+            Domainname: '',
+            AttachStdout: false,
+            PublishService: '',
+            AttachStdin: false,
+            OpenStdin: false,
+            StdinOnce: false,
+            NetworkDisabled: false,
+            OnBuild: [],
+            Image: '91e54dfb11794fad694460162bf0cb0a4fa710cfa3f60979c177d920813e267c',
+            User: '',
+            WorkingDir: '',
+            MacAddress: '',
+            AttachStderr: false,
+            Labels: {
+                'com.example.license': 'GPL',
+                'com.example.version': '1.0',
+                'com.example.vendor': 'Acme',
+            },
+            Env: [
+                'PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin',
+            ],
+            Cmd: [
+                '/bin/sh',
+                '-c',
+                '#(nop) LABEL com.example.vendor=Acme com.example.license=GPL com.example.version=1.0',
+            ],
+        },
+        DockerVersion: '1.9.0-dev',
+        VirtualSize: 188359297,
+        Size: 0,
+        Author: '',
+        Created: '2015-09-10T08:30:53.26995814Z',
+        GraphDriver: {
+            Name: 'aufs',
+            Data: {},
+        },
+        RepoDigests: [
+            'localhost:5000/test/busybox/example@sha256:cbbf2f9a99b47fc460d422812b6a5adff7dfee951d8fa2e4a98caa0382cfbdbf',
+        ],
+        RepoTags: ['example:1.0', 'example:latest', 'example:stable'],
+        Config: {
+            Image: '91e54dfb11794fad694460162bf0cb0a4fa710cfa3f60979c177d920813e267c',
+            NetworkDisabled: false,
+            OnBuild: [],
+            StdinOnce: false,
+            PublishService: '',
+            AttachStdin: false,
+            OpenStdin: false,
+            Domainname: '',
+            AttachStdout: false,
+            Tty: false,
+            Hostname: 'e611e15f9c9d',
+            Cmd: ['/bin/bash'],
+            Env: [
+                'PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin',
+            ],
+            Labels: {
+                'com.example.vendor': 'Acme',
+                'com.example.version': '1.0',
+                'com.example.license': 'GPL',
+            },
+            MacAddress: '',
+            AttachStderr: false,
+            WorkingDir: '',
+            User: '',
+        },
+        RootFS: {
+            Type: 'layers',
+            Layers: [
+                'sha256:1834950e52ce4d5a88a1bbd131c537f4d0e56d10ff0dd69e66be3b7dfa9df7e6',
+                'sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef',
+            ],
+        },
+    },
+];
+
 const dockerContainersResponse = [
     {
         Id: '8dfafdbc3a40',
@@ -234,10 +407,15 @@ async function getImages() {
     return dockerImagesResponse;
 }
 
+async function getImageInspect(id) {
+    await timeout(200);
+    return dockerImageInspectResponse.find((image) => (image.Id = id));
+}
+
 async function getContainers() {
     await timeout(1000);
     return dockerContainersResponse;
 }
 
-const mocks = { getDockerVersion, getImages, getContainers };
+const mocks = { getDockerVersion, getImages, getContainers, getImageInspect };
 export { mocks };
