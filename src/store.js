@@ -2,11 +2,12 @@ import { reactive } from 'vue';
 
 const store = {
     state: reactive({
-        view: 'search',
+        view: 'containers',
         dockerVersion: { name: 'Harry' },
         imagesInspect: [],
         images: [],
         containers: [],
+        configuringImage: {},
     }),
     setDockerVersion(newValue) {
         this.state.dockerVersion = newValue;
@@ -22,6 +23,10 @@ const store = {
     },
     setInspectImages(newValue) {
         this.state.imagesInspect = newValue;
+    },
+    setConfigImage(image) {
+        console.log(`setting configuringImage to ${image.Id} in store.`);
+        this.state.configuringImage = image;
     },
 };
 

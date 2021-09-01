@@ -1,15 +1,16 @@
 {
     "cSpell.words": [
-        "Domainname",
-        "Windi",
         "aufs",
         "busybox",
+        "changeview",
+        "Domainname",
         "linuxkit",
         "rulesets",
         "sbin",
         "tosbur",
         "vite",
         "vitejs",
+        "Windi",
         "windicss"
     ],
     "javascript.format.enable": false,

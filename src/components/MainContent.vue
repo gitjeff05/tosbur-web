@@ -9,18 +9,11 @@
                     :title="post.Size"
                     class="flex flex-col bg-gray-50 shadow my-2 p-4 py-3"
                 >
-                    <div class="flex flex-row items-center justify-between">
-                        <span class="flex w-2/3 justify-between">
-                            <span>{{ post.RepoTags[0] }}</span
-                            ><span> {{ computeSize(post.Size) }}</span></span
-                        >
-                        <button
-                            class="image-container-action start-image"
-                            @click="$emit('start-container', post.Id)"
-                        >
-                            start
-                        </button>
-                    </div>
+                    <image-action-buttons
+                        :image="post"
+                        :configuringImage="configuringImage"
+                        @configure-container="configureContainer"
+                    />
                     <div
                         v-if="post.Config.Entrypoint ?? false"
                         class="text-sm info entrypoint"
@@ -61,7 +54,15 @@
             <h1 class="font-semibold text-xl">Search</h1>
         </div>
         <div v-else-if="currentView === 'containers'">
-            <h1 class="font-semibold text-xl">Containers</h1>
+            <div class="inline-flex">
+                <h1 class="font-semibold text-xl">Containers</h1>
+                <button
+                    class="ml-4 button image-container-action"
+                    @click="$emit('refresh-containers')"
+                >
+                    Refresh
+                </button>
+            </div>
             <ul>
                 <li
                     v-for="post in containers"
@@ -79,21 +80,57 @@
                     "
                 >
                     <div
-                        class="flex flex-row w-3/4 items-center justify-between"
+                        class="flex flex-row w-1/4 items-center justify-around"
                     >
                         <span>{{ post.Names[0] }}</span
-                        ><span> {{ post.Image }}</span>
+                        ><span> {{ post.Id.slice(0, 10) }}</span>
                     </div>
-                    <span class="flex flex-col">
-                        <span>{{ post.State }}</span
+                    <span class="flex flex-col pl-3 leading-5 w-1/4">
+                        <span class="text-emerald-600">{{ post.State }}</span
                         ><span>{{ post.Status }}</span></span
                     >
-                    <button
-                        class="image-container-action attach-container"
-                        @click="$emit('attach-to-container', post.Id)"
+                    <div
+                        class="
+                            container-actions
+                            flex flex-row
+                            w-1/2
+                            button-group
+                            justify-end
+                        "
                     >
-                        attach
-                    </button>
+                        <button
+                            class="image-container-action attach-container"
+                            @click="$emit('attach-to-container', post.Id)"
+                        >
+                            attach
+                        </button>
+                        <button
+                            class="list-processes image-container-action"
+                            @click="
+                                $emit('list-processes-in-container', post.Id)
+                            "
+                        >
+                            list processes
+                        </button>
+                        <button
+                            class="inspect-container image-container-action"
+                            @click="$emit('inspect-container', post.Id)"
+                        >
+                            inspect
+                        </button>
+                        <button
+                            class="container-logs image-container-action"
+                            @click="$emit('container-logs', post.Id)"
+                        >
+                            logs
+                        </button>
+                        <button
+                            class="image-container-action kill-container"
+                            @click="$emit('kill-container', post.Id)"
+                        >
+                            kill
+                        </button>
+                    </div>
                 </li>
             </ul>
         </div>
@@ -102,7 +139,9 @@
 
 <script>
 import { onUpdated } from 'vue';
+import ImageActionButtons from './ImageActionButtons.vue';
 export default {
+    components: { ImageActionButtons },
     props: {
         currentView: {
             type: String,
@@ -123,11 +162,28 @@ export default {
             },
             required: false,
         },
+        configuringImage: {
+            type: Object,
+            default: () => {
+                return {};
+            },
+        },
     },
-    emits: ['start-container', 'attach-to-container'],
+    emits: [
+        'start-container',
+        'attach-to-container',
+        'kill-container',
+        'refresh-containers',
+        'list-processes-in-container',
+        'inspect-container',
+        'container-logs',
+        'configure-container',
+    ],
     setup(props) {
         onUpdated(() => {
-            console.log(`Updated main with ${props.currentView}`);
+            console.log(
+                `Updated main with ${props.currentView} and ${props.configuringImage}`
+            );
             console.log(props.images);
         });
         const computeSize = (size) => {
@@ -136,7 +192,15 @@ export default {
                 ? `${Number.parseFloat(sizeRounded).toFixed(2)} MB`
                 : `${Number.parseFloat(size / 1000000000).toFixed(2)} GB`;
         };
+
         return { computeSize };
+    },
+    methods: {
+        async configureContainer(image) {
+            console.log('emitted configuring container, bubble up');
+            console.log(image);
+            this.$emit('configure-container', image);
+        },
     },
 };
 </script>
@@ -145,13 +209,11 @@ export default {
 main {
     @apply h-screen p-6 pb-10;
 }
-.image-container-action {
-    @apply text-sm p-1 px-3 text-cool-gray-200 inline-flex items-center;
-}
-.start-image {
-    background-color: #132c33;
-}
+
 .attach-container {
     background-color: #132c33;
+}
+.container-actions button {
+    @apply mr-2 px-6;
 }
 </style>

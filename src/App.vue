@@ -3,15 +3,21 @@
         <h1>Tosbur</h1>
     </header>
     <section class="main-content">
-        <sidebar-menu :state="state" @change-view="changeView"></sidebar-menu>
+        <sidebar-menu :state="state" @changeview="changeView"></sidebar-menu>
         <main-content
             class="content"
             :current-view="state.view"
-            :images="imagesWithInfo"
-            :image-inspections="state.imageInspect"
+            :images="imagesWithInspections"
             :containers="state.containers"
+            :configuringImage="state.configuringImage"
             @start-container="startContainer"
             @attach-to-container="attachContainer"
+            @kill-container="killContainer"
+            @refresh-containers="refreshContainers"
+            @list-processes-in-container="listProcessesInContainer"
+            @inspect-container="inspectContainer"
+            @container-logs="getContainerLogs"
+            @configure-container="configureContainer"
         ></main-content>
     </section>
 </template>
@@ -42,12 +48,11 @@ export default {
         return store;
     },
     computed: {
-        imagesWithInfo() {
+        imagesWithInspections() {
             return this.state.images.map((image) => {
                 const inspect = this.state.imagesInspect.find(
                     (i) => i.Id === image.Id
                 );
-                console.log('images computed ', inspect);
                 return {
                     RepoTags: image.RepoTags,
                     Id: image.Id,
@@ -71,14 +76,13 @@ export default {
                 store.setDockerImages(images);
                 return images;
             })
-            .then((images) => {
-                const imageInspectPromises = images.map((i) =>
-                    tosbur.getImageInspect(i.Id)
+            .then(async (images) => {
+                const inspectedImagesPromises = images.map((i) =>
+                    tosbur.inspectImage(i.Id)
                 );
-                return Promise.all(imageInspectPromises).then((response) => {
-                    store.setInspectImages(response);
-                    return response;
-                });
+                const response = await Promise.all(inspectedImagesPromises);
+                store.setInspectImages(response);
+                return response;
             })
             .then(tosbur.getContainers)
             .then((f) => {
@@ -88,19 +92,27 @@ export default {
             })
             .catch((e) => {
                 console.error(e);
-                console.error('Could not get docker version');
+                console.error(
+                    'Could not complete setup requests in created() method in App instance'
+                );
             });
     },
     methods: {
         changeView(view) {
             store.setView(view);
         },
+        async configureContainer(val) {
+            console.log('Configuring container', val);
+            return store.setConfigImage(val);
+        },
         async startContainer(val) {
             console.log('Creating and starting container', val);
             const createContainer = await tosbur.createContainer({
                 image: val,
+                mount: '/Users/bishop/Github/nih-grant-awards',
             });
-            return await tosbur.startContainer(createContainer);
+            await tosbur.startContainer(createContainer);
+            return this.refreshContainers();
         },
         async attachContainer(val) {
             console.log('Attaching to container', val);
@@ -113,6 +125,55 @@ export default {
                     console.error(e);
                 });
         },
+        async killContainer(val) {
+            console.log('Killing container', val);
+            const response = await tosbur.killContainer(val).then();
+            console.log(response);
+            return response;
+        },
+        async refreshContainers() {
+            return tosbur
+                .getContainers()
+                .then((f) => {
+                    console.log('Fetched containers', f);
+                    store.setContainers(f);
+                    return;
+                })
+                .catch((e) => {
+                    console.error(e);
+                    console.error('Could not fetch containers');
+                });
+        },
+        async listProcessesInContainer(id) {
+            return tosbur
+                .listProcessesInContainer(id)
+                .then((processes) => {
+                    console.log('listing processes', processes);
+                })
+                .catch((e) => {
+                    console.error('Could not get running processes', e);
+                });
+        },
+        async inspectContainer(id) {
+            return tosbur
+                .inspectContainer(id)
+                .then((container) => {
+                    console.log('inspected container', container);
+                })
+                .catch((e) => {
+                    console.error('Could not inspect container', e);
+                });
+        },
+        async getContainerLogs(id) {
+            return tosbur
+                .getContainerLogs(id)
+                .then((logs) => {
+                    console.log('container logs', logs);
+                })
+                .catch((e) => {
+                    console.error('Could not get container logs', e);
+                });
+        },
     },
 };
 
@@ -122,13 +183,13 @@ export default {
 
 <style>
 body {
-    @apply h-screen font-sans;
+    @apply font-sans h-screen;
 }
 #app {
-    @apply fixed inset-0 h-screen flex flex-col;
+    @apply flex flex-col h-screen inset-0 fixed;
 }
 header {
-    @apply flex px-4 py-1 h-8 items-center justify-center z-20 text-xs shadow-lg;
+    @apply flex h-8 shadow-lg text-xs py-1 px-4 z-20 items-center justify-center;
     min-height: 36px;
     background-color: #132c33;
 }
@@ -136,22 +197,22 @@ header > h1 {
     color: #eee;
 }
 .main-content {
-    @apply h-screen flex flex-row;
+    @apply flex flex-row h-screen;
     background-color: #eeeeee;
 }
 .content {
-    @apply w-full flex-grow;
+    @apply flex-grow w-full;
     overflow-y: scroll;
 }
 .sidebar {
-    @apply h-full overflow-hidden flex flex-col flex-shrink-0 justify-start text-cool-gray-100 items-center p-1 z-10 shadow py-4 border-r-1;
+    @apply flex flex-col h-full border-r-1 flex-shrink-0 shadow p-1 py-4 text-cool-gray-100 z-10 overflow-hidden justify-start items-center;
     width: 36px;
     min-width: 36px;
     background-color: #126e82;
     border-color: #132c33;
 }
 footer {
-    @apply flex px-4 py-1 h-8 items-center justify-end z-20 shadow-2xl border-t-1 border-gray-900 border-opacity-80 text-xs;
+    @apply flex border-t-1 border-gray-900 border-opacity-80 h-8 text-xs py-1 px-4 shadow-2xl z-20 items-center justify-end;
     background-color: #132c33;
     color: #eee;
 }
