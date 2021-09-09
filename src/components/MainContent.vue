@@ -4,49 +4,23 @@
             <h1 class="font-semibold text-xl">List of images</h1>
             <ul>
                 <li
-                    v-for="post in images"
-                    :key="post.Id"
-                    :title="post.Size"
+                    v-for="image in images"
+                    :key="image.Id"
+                    :title="image.Size"
                     class="flex flex-col bg-gray-50 shadow my-2 p-4 py-3"
                 >
                     <image-action-buttons
-                        :image="post"
-                        :configuringImage="configuringImage"
+                        :image="image"
+                        :configuring-image="configuringImage"
                         @configure-container="configureContainer"
                     />
-                    <div
-                        v-if="post.Config.Entrypoint ?? false"
-                        class="text-sm info entrypoint"
-                    >
-                        <span
-                            >Entrypoint:
-                            <span class="font-mono text-indigo-700">{{
-                                post.Config.Entrypoint.join(' ')
-                            }}</span></span
-                        >
-                    </div>
-                    <div
-                        v-if="post.Config.Cmd ?? false"
-                        class="text-sm info cmd"
-                    >
-                        <span
-                            >Cmd:
-                            <span class="font-mono text-indigo-700">{{
-                                post.Config.Cmd.join(' ')
-                            }}</span></span
-                        >
-                    </div>
-                    <div
-                        v-if="post.Config.ExposedPorts ?? false"
-                        class="text-sm info ports"
-                    >
-                        <span
-                            >ExposedPorts:
-                            <span class="font-mono text-indigo-700">{{
-                                post.Config.ExposedPorts
-                            }}</span></span
-                        >
-                    </div>
+                    <entry-point-info :image="image" />
+                    <cmd-info :image="image" />
+                    <exposed-ports-info :image="image" />
+                    <editingConfiguration
+                        :image="image"
+                        :configuring-image="configuringImage"
+                    />
                 </li>
             </ul>
         </div>
@@ -65,9 +39,9 @@
             </div>
             <ul>
                 <li
-                    v-for="post in containers"
-                    :key="post.Id"
-                    :title="post.Size"
+                    v-for="container in containers"
+                    :key="container.Id"
+                    :title="container.Size"
                     class="
                         flex flex-row
                         bg-gray-50
@@ -82,12 +56,14 @@
                     <div
                         class="flex flex-row w-1/4 items-center justify-around"
                     >
-                        <span>{{ post.Names[0] }}</span
-                        ><span> {{ post.Id.slice(0, 10) }}</span>
+                        <span>{{ container.Names[0] }}</span
+                        ><span> {{ container.Id.slice(0, 10) }}</span>
                     </div>
                     <span class="flex flex-col pl-3 leading-5 w-1/4">
-                        <span class="text-emerald-600">{{ post.State }}</span
-                        ><span>{{ post.Status }}</span></span
+                        <span class="text-emerald-600">{{
+                            container.State
+                        }}</span
+                        ><span>{{ container.Status }}</span></span
                     >
                     <div
                         class="
@@ -100,33 +76,36 @@
                     >
                         <button
                             class="image-container-action attach-container"
-                            @click="$emit('attach-to-container', post.Id)"
+                            @click="$emit('attach-to-container', container.Id)"
                         >
                             attach
                         </button>
                         <button
                             class="list-processes image-container-action"
                             @click="
-                                $emit('list-processes-in-container', post.Id)
+                                $emit(
+                                    'list-processes-in-container',
+                                    container.Id
+                                )
                             "
                         >
                             list processes
                         </button>
                         <button
                             class="inspect-container image-container-action"
-                            @click="$emit('inspect-container', post.Id)"
+                            @click="$emit('inspect-container', container.Id)"
                         >
                             inspect
                         </button>
                         <button
                             class="container-logs image-container-action"
-                            @click="$emit('container-logs', post.Id)"
+                            @click="$emit('container-logs', container.Id)"
                         >
                             logs
                         </button>
                         <button
                             class="image-container-action kill-container"
-                            @click="$emit('kill-container', post.Id)"
+                            @click="$emit('kill-container', container.Id)"
                         >
                             kill
                         </button>
@@ -140,8 +119,18 @@
 <script>
 import { onUpdated } from 'vue';
 import ImageActionButtons from './ImageActionButtons.vue';
+import EntryPointInfo from './EntryPointInfo.vue';
+import CmdInfo from './CmdInfo.vue';
+import ExposedPortsInfo from './ExposedPortsInfo.vue';
+import EditingConfiguration from './EditingConfiguration.vue';
 export default {
-    components: { ImageActionButtons },
+    components: {
+        ImageActionButtons,
+        EntryPointInfo,
+        CmdInfo,
+        ExposedPortsInfo,
+        EditingConfiguration,
+    },
     props: {
         currentView: {
             type: String,
@@ -186,19 +175,13 @@ export default {
             );
             console.log(props.images);
         });
-        const computeSize = (size) => {
-            const sizeRounded = size / 1000000;
-            return sizeRounded < 1000
-                ? `${Number.parseFloat(sizeRounded).toFixed(2)} MB`
-                : `${Number.parseFloat(size / 1000000000).toFixed(2)} GB`;
-        };
-
-        return { computeSize };
     },
     methods: {
         async configureContainer(image) {
-            console.log('emitted configuring container, bubble up');
-            console.log(image);
+            // TODO - This is necessary because events don't bubble up to the parent container.
+            // Is this intermediate event passing and anti-pattern?
+            // Should we pass a function down or the store so that
+            // this is not necessary?
             this.$emit('configure-container', image);
         },
     },

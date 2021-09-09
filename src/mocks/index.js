@@ -409,7 +409,7 @@ async function getImages() {
 
 async function getImageInspect(id) {
     await timeout(200);
-    return dockerImageInspectResponse.find((image) => (image.Id = id));
+    return dockerImageInspectResponse.find((image) => image.Id === id);
 }
 
 async function getContainers() {
@@ -417,5 +417,16 @@ async function getContainers() {
     return dockerContainersResponse;
 }
 
-const mocks = { getDockerVersion, getImages, getContainers, getImageInspect };
+async function inspectImage() {
+    await timeout(500);
+    return [];
+}
+
+const mocks = {
+    getDockerVersion,
+    getImages,
+    getContainers,
+    getImageInspect,
+    inspectImage,
+};
 export { mocks };

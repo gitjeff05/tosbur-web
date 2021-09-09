@@ -1,6 +1,21 @@
 import { render, fireEvent } from '@testing-library/vue';
 import Component from './SidebarMenu.vue';
 
+/**
+ * Icons are integrated into our app through Vite and the
+ * unplugin-icons plugin.
+ * Since Jest and Vite are unaware of eachother and do not
+ * share any configuration, we mock the console.warn for this
+ * test to quiet the large number of verbose warnings.
+ */
+beforeEach(() => {
+    jest.spyOn(console, 'warn');
+    console.warn.mockImplementation(() => {});
+});
+afterEach(() => {
+    console.warn.mockRestore();
+});
+
 test('default view from store is active', async () => {
     const { getByTestId } = render(Component);
 

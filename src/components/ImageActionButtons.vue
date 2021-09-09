@@ -1,12 +1,14 @@
 <template>
     <div class="flex flex-row items-center justify-between">
         <span class="flex w-2/3 justify-between">
-            <span>{{ image.RepoTags[0] }}</span>
+            <span class="font-black text-xl text-cyan-900">{{
+                image.RepoTags[0]
+            }}</span>
             <span> {{ computeSize(image.Size) }}</span>
         </span>
         <button
-            data-testid="start"
             v-if="!isConfiguring"
+            data-testid="start"
             :disabled="anotherImageIsBeingConfigured"
             class="image-container-action configure-container"
             @click="$emit('configure-container', image)"

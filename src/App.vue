@@ -9,7 +9,7 @@
             :current-view="state.view"
             :images="imagesWithInspections"
             :containers="state.containers"
-            :configuringImage="state.configuringImage"
+            :configuring-image="state.configuringImage"
             @start-container="startContainer"
             @attach-to-container="attachContainer"
             @kill-container="killContainer"
@@ -48,6 +48,22 @@ export default {
         return store;
     },
     computed: {
+        /**
+         * This is a special aggregate array consisting of image data from
+         * two objects in the store.
+         * We pass this array to the MainContent component via the "images" prop.
+         * The data is primarirly from the ImageList endpoint, but we also merge
+         * in the `Config` object from ImageInspect:
+         *
+         * tosbur.getImages() -> /api/images/json?all=true -> store.setDockerImages()
+         * tosbur.inspectImage() -> /api/images/${id}/json -> store.setInspectImages()
+         *
+         * Relevent API docs:
+         *
+         * https://docs.docker.com/engine/api/v1.41/#operation/ImageInspect
+         * https://docs.docker.com/engine/api/v1.41/#operation/ImageList
+         *
+         */
         imagesWithInspections() {
             return this.state.images.map((image) => {
                 const inspect = this.state.imagesInspect.find(
