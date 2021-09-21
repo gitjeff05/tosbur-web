@@ -1,4 +1,4 @@
-import { render, fireEvent } from '@testing-library/vue';
+import { render } from '@testing-library/vue';
 import Component from './ImageActionButtons.vue';
 
 test('start button should be not be disabled if user is not actively configuring another image', async () => {

@@ -18,6 +18,7 @@
             @inspect-container="inspectContainer"
             @container-logs="getContainerLogs"
             @configure-container="configureContainer"
+            @cancel-configure-container="cancelConfigureContainer"
         ></main-content>
     </section>
 </template>
@@ -120,6 +121,10 @@ export default {
         async configureContainer(val) {
             console.log('Configuring container', val);
             return store.setConfigImage(val);
+        },
+        async cancelConfigureContainer() {
+            console.log('Cancel container configuration');
+            return store.setConfigImage({});
         },
         async startContainer(val) {
             console.log('Creating and starting container', val);

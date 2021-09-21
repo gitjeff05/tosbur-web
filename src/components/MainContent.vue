@@ -14,9 +14,23 @@
                         :configuring-image="configuringImage"
                         @configure-container="configureContainer"
                     />
-                    <entry-point-info :image="image" />
-                    <cmd-info :image="image" />
-                    <exposed-ports-info :image="image" />
+                    <div v-if="configuringId !== image.Id">
+                        <entry-point-info :image="image" />
+                        <cmd-info :image="image" />
+                        <exposed-ports-info :image="image" />
+                    </div>
+                    <div v-else>
+                        <button
+                            class="
+                                text-sm text-purple-500
+                                button
+                                underline-dark-800
+                            "
+                            @click="$emit('cancel-configure-container')"
+                        >
+                            cancel
+                        </button>
+                    </div>
                     <editingConfiguration
                         :image="image"
                         :configuring-image="configuringImage"
@@ -167,14 +181,22 @@ export default {
         'inspect-container',
         'container-logs',
         'configure-container',
+        'cancel-configure-container',
     ],
     setup(props) {
         onUpdated(() => {
             console.log(
-                `Updated main with ${props.currentView} and ${props.configuringImage}`
+                `Updated main with ${props.currentView} and ${JSON.stringify(
+                    props.configuringImage
+                )}`
             );
             console.log(props.images);
         });
+    },
+    computed: {
+        configuringId() {
+            return this.configuringImage?.Id ?? false;
+        },
     },
     methods: {
         async configureContainer(image) {
