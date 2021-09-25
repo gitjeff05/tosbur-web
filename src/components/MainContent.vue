@@ -9,32 +9,13 @@
                     :title="image.Size"
                     class="flex flex-col bg-gray-50 shadow my-2 p-4 py-3"
                 >
-                    <image-action-buttons
+                    <container-image
                         :image="image"
                         :configuring-image="configuringImage"
                         @configure-container="configureContainer"
-                    />
-                    <div v-if="configuringId !== image.Id">
-                        <entry-point-info :image="image" />
-                        <cmd-info :image="image" />
-                        <exposed-ports-info :image="image" />
-                    </div>
-                    <div v-else>
-                        <button
-                            class="
-                                text-sm text-purple-500
-                                button
-                                underline-dark-800
-                            "
-                            @click="$emit('cancel-configure-container')"
-                        >
-                            cancel
-                        </button>
-                    </div>
-                    <editingConfiguration
-                        :image="image"
-                        :configuring-image="configuringImage"
-                    />
+                        @cancel-configure-container="cancelConfigureContainer"
+                        @start-container="startContainer"
+                    ></container-image>
                 </li>
             </ul>
         </div>
@@ -132,18 +113,10 @@
 
 <script>
 import { onUpdated } from 'vue';
-import ImageActionButtons from './ImageActionButtons.vue';
-import EntryPointInfo from './EntryPointInfo.vue';
-import CmdInfo from './CmdInfo.vue';
-import ExposedPortsInfo from './ExposedPortsInfo.vue';
-import EditingConfiguration from './EditingConfiguration.vue';
+import ContainerImage from './ContainerImage.vue';
 export default {
     components: {
-        ImageActionButtons,
-        EntryPointInfo,
-        CmdInfo,
-        ExposedPortsInfo,
-        EditingConfiguration,
+        ContainerImage,
     },
     props: {
         currentView: {
@@ -190,21 +163,22 @@ export default {
                     props.configuringImage
                 )}`
             );
-            console.log(props.images);
         });
     },
-    computed: {
-        configuringId() {
-            return this.configuringImage?.Id ?? false;
-        },
-    },
     methods: {
+        startContainer(opts) {
+            console.log('emitted to parent');
+            console.log(opts);
+        },
         async configureContainer(image) {
             // TODO - This is necessary because events don't bubble up to the parent container.
             // Is this intermediate event passing and anti-pattern?
             // Should we pass a function down or the store so that
             // this is not necessary?
             this.$emit('configure-container', image);
+        },
+        async cancelConfigureContainer() {
+            this.$emit('cancel-configure-container');
         },
     },
 };

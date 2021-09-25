@@ -114,6 +114,7 @@ export default {
                 );
             });
     },
+
     methods: {
         changeView(view) {
             store.setView(view);

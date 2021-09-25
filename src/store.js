@@ -25,8 +25,6 @@ const store = {
         this.state.imagesInspect = newValue;
     },
     setConfigImage(image) {
-        const imageObj = image?.Id ?? {};
-        console.log(`setting configuringImage to ${imageObj} in store.`);
         this.state.configuringImage = image;
     },
 };
