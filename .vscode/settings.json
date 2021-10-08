@@ -29,7 +29,7 @@
         "editor.defaultFormatter": "esbenp.prettier-vscode"
     },
     "workbench.tree.indent": 20,
-    "workbench.colorTheme": "Default Dark+",
+    "workbench.colorTheme": "Bluloco Light Italic",
     "window.title": "${activeEditorLong}${separator}${rootName}",
     "breadcrumbs.icons": true,
 

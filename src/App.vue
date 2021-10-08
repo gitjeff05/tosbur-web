@@ -24,11 +24,12 @@
 </template>
 
 <script>
+import { provide, reactive } from 'vue';
 import { mocks } from './mocks';
 import SidebarMenu from './components/SidebarMenu.vue';
 import MainContent from './components/MainContent.vue';
 import store from './store.js';
-
+import { buildImageRequest } from './api/utils.js';
 /**
 Mock window.tosbur when in vite development mode
 https://vitejs.dev/guide/env-and-mode.html#env-variables-and-modes
@@ -45,9 +46,14 @@ export default {
         SidebarMenu,
         MainContent,
     },
+    setup() {
+        const currentView = reactive(store.state.view);
+        provide('currentViewNow', currentView);
+    },
     data() {
         return store;
     },
+
     computed: {
         /**
          * This is a special aggregate array consisting of image data from
@@ -80,7 +86,6 @@ export default {
         },
     },
     created() {
-        // `this` points to the vm instance
         return tosbur
             .getDockerVersion()
             .then((f) => {
@@ -116,7 +121,26 @@ export default {
     },
 
     methods: {
-        changeView(view) {
+        async changeView(view) {
+            const isAttachedContainer =
+                Object.keys(this.state.attachedContainer).length !== 0;
+            const isAttachedCurrentView = this.state.view === 'attached';
+            const isAttemptingToSwitchToAttachedView = view === 'attached';
+            if (
+                isAttachedContainer &&
+                isAttachedCurrentView &&
+                !isAttemptingToSwitchToAttachedView
+            ) {
+                await tosbur.hideEmbeddedView(view);
+            }
+            if (
+                isAttachedContainer &&
+                !isAttachedCurrentView &&
+                isAttemptingToSwitchToAttachedView
+            ) {
+                await tosbur.showEmbeddedView(view);
+            }
+            console.log(`switch view ${view}`);
             store.setView(view);
         },
         async configureContainer(val) {
@@ -127,12 +151,11 @@ export default {
             console.log('Cancel container configuration');
             return store.setConfigImage({});
         },
-        async startContainer(val) {
-            console.log('Creating and starting container', val);
-            const createContainer = await tosbur.createContainer({
-                image: val,
-                mount: '/Users/bishop/Github/nih-grant-awards',
-            });
+        async startContainer(configuration) {
+            console.log('Creating and starting container');
+            const imageRequest = buildImageRequest(configuration);
+            const createContainer = await tosbur.createContainer(imageRequest);
+            console.log(`container created ${createContainer}`);
             await tosbur.startContainer(createContainer);
             return this.refreshContainers();
         },
@@ -141,6 +164,8 @@ export default {
             return tosbur
                 .attachToContainer({ Id: val })
                 .then((f) => {
+                    console.log(`successfully attached container ${val}`);
+                    store.setAttachedContainer(f);
                     console.log(f);
                 })
                 .catch((e) => {

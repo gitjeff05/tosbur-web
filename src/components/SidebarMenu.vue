@@ -1,8 +1,7 @@
 <script>
-import { computed } from 'vue';
+import { computed, inject } from 'vue';
 
 export default {
-    // just need state and view?
     props: {
         state: {
             type: Object,
@@ -15,15 +14,25 @@ export default {
     },
     emits: ['changeview'],
     setup(props) {
+        const currentViewNow = inject('currentViewNow', 'search');
+        const hasActiveContainer = computed(
+            () => Object.keys(props.state.attachedContainer).length !== 0
+        );
         const isSearchActive = computed(() => props.state.view === 'search');
         const isImagesActive = computed(() => props.state.view === 'images');
         const isContainersActive = computed(
             () => props.state.view === 'containers'
         );
+        const isAttachedContainerActive = computed(
+            () => props.state.view === 'attached'
+        );
         return {
+            currentViewNow,
+            hasActiveContainer,
             isSearchActive,
             isImagesActive,
             isContainersActive,
+            isAttachedContainerActive,
         };
     },
 };
@@ -70,6 +79,19 @@ export default {
         >
             <i-carbon-container-software />
         </button>
+        <button
+            v-if="hasActiveContainer"
+            id="activeContainer"
+            data-testid="activeContainers"
+            class="icon"
+            title="Active Container"
+            role="button"
+            tab-index="3"
+            :class="{ active: isAttachedContainerActive }"
+            @click="$emit('changeview', 'attached')"
+        >
+            <i-carbon-3rd-party-connected />
+        </button>
     </aside>
 </template>
 
@@ -77,7 +99,7 @@ export default {
 button.icon {
     @apply font-extrabold my-1 text-xl;
     width: 2.2rem;
-    padding: 0.5rem 0.25rem;
+    padding: 7px 5px 2px 3px;
     cursor: default;
 }
 button.icon:hover {
@@ -87,6 +109,6 @@ button.active,
 button.active:hover {
     background-color: #132c33;
     outline: none;
-    @apply shadow-xl  ring-offset-1 ring-opacity-80 ring-cyan-900;
+    @apply shadow-xl ring-offset-1 ring-opacity-80 ring-cyan-900;
 }
 </style>

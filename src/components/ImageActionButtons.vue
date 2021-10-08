@@ -10,10 +10,14 @@
             v-if="!isConfiguring"
             data-testid="start"
             :disabled="anotherImageIsBeingConfigured"
-            class="image-container-action configure-container"
-            @click="$emit('configure-container', image)"
+            class="
+                bg-blue-500
+                image-container-action
+                sm:hover:bg-blue-700 sm:hover:text-cool-gray-50
+            "
+            @click="$parent.$parent.$parent.$emit('configure-container', image)"
         >
-            start
+            Configure and start container
         </button>
     </div>
 </template>
@@ -34,7 +38,6 @@ export default {
             },
         },
     },
-    emits: ['configure-container'],
     computed: {
         /**
          * If the configuringImage is set on the store
@@ -66,13 +69,10 @@ export default {
 
 <style scoped>
 .image-container-action {
-    @apply text-sm p-1 px-3 text-cool-gray-200 inline-flex items-center;
-    background-color: #132c33;
+    @apply text-sm p-2 px-3 text-cool-gray-200 inline-flex items-center;
 }
-.configure-container {
-    background-color: #132c33;
-}
+
 .image-container-action:disabled {
-    @apply cursor-not-allowed bg-gray-600;
+    @apply cursor-not-allowed bg-gray-400;
 }
 </style>

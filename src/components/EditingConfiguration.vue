@@ -1,5 +1,8 @@
 <template>
-    <div class="flex flex-wrap items-center">
+    <div
+        class="flex flex-wrap items-center"
+        :class="initialShow ? 'config-show' : 'config-hide'"
+    >
         <div class="p-2 w-1/3 align-middle">
             <label for="path" class="text-sm text-gray-600 leading-7"
                 >Mount Path</label
@@ -8,7 +11,7 @@
                 v-model.trim="mountPath.pathString"
                 type="text"
                 name="path"
-                class="config-input"
+                class="config-input config-mountpath"
                 @keyup="validatePath"
             />
             <span
@@ -48,23 +51,20 @@
         <div class="p-2 w-1/3">
             <button
                 class="
-                    bg-indigo-500
-                    border-0
-                    flex-shrink-0
-                    text-white
-                    py-2
-                    px-6
-                    inline-flex
+                    bg-blue-500 border-0 flex-shrink-0 text-white
+                    p-2 px-3
                     lg:mt-2
                     xl:mt-0
-                    hover:bg-indigo-600
                     focus:outline-none
+                    sm:hover:bg-blue-700
+                    sm:hover:text-cool-gray-50
                 "
                 @click="
-                    $parent.$emit('start-container', {
+                    $parent.$parent.$emit('start-container', {
                         mountPath,
                         entryPoint,
                         cmd,
+                        image,
                     })
                 "
             >
@@ -105,6 +105,7 @@ export default {
                 edited: null,
             },
             timeout: null,
+            initialShow: false,
         };
     },
     created() {
@@ -112,6 +113,12 @@ export default {
         const entrypoint = config?.Entrypoint;
         this.entryPoint.original = entrypoint;
         this.cmd.original = config?.Cmd ?? null;
+        // Delay the initial view of this component
+        // so the parent has enough time to complete
+        // its height expanding animation
+        setTimeout(() => {
+            this.initialShow = true;
+        }, 300);
     },
     methods: {
         validatePath() {
@@ -135,6 +142,14 @@ export default {
 
 <style scoped>
 .config-input {
-    @apply text-base w-full py-1 px-3 text-gray-900 leading-8 focus:bg-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200;
+    @apply text-base w-full py-1 px-3 text-gray-900 leading-8 
+        focus:bg-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200;
+}
+.config-hide {
+    opacity: 0;
+}
+.config-show {
+    opacity: 1;
+    transition: opacity 0.5s linear;
 }
 </style>

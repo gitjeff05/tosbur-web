@@ -1,5 +1,5 @@
 import '@testing-library/jest-dom';
-import { render, fireEvent, screen } from '@testing-library/vue';
+import { render, screen } from '@testing-library/vue';
 import Component from './ContainerImage.vue';
 
 test('Cancel button should be visible when user is configuring image', async () => {
