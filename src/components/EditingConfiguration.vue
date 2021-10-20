@@ -51,16 +51,19 @@
         <div class="p-2 w-1/3">
             <button
                 class="
-                    bg-blue-500 border-0 flex-shrink-0 text-white
-                    p-2 px-3
+                    bg-blue-500
+                    border-0
+                    flex-shrink-0
+                    text-white
+                    p-2
+                    px-3
                     lg:mt-2
                     xl:mt-0
                     focus:outline-none
-                    sm:hover:bg-blue-700
-                    sm:hover:text-cool-gray-50
+                    sm:hover:bg-blue-700 sm:hover:text-cool-gray-50
                 "
                 @click="
-                    $parent.$parent.$emit('start-container', {
+                    $parent.$parent.$parent.$emit('start-container', {
                         mountPath,
                         entryPoint,
                         cmd,

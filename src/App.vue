@@ -6,7 +6,6 @@
         <sidebar-menu :state="state" @changeview="changeView"></sidebar-menu>
         <main-content
             class="content"
-            :current-view="state.view"
             :images="imagesWithInspections"
             :containers="state.containers"
             :configuring-image="state.configuringImage"
@@ -24,7 +23,7 @@
 </template>
 
 <script>
-import { provide, reactive } from 'vue';
+import { provide, ref } from 'vue';
 import { mocks } from './mocks';
 import SidebarMenu from './components/SidebarMenu.vue';
 import MainContent from './components/MainContent.vue';
@@ -47,13 +46,19 @@ export default {
         MainContent,
     },
     setup() {
-        const currentView = reactive(store.state.view);
-        provide('currentViewNow', currentView);
+        const currentView = ref('images');
+        const updateView = (newValue) => {
+            currentView.value = newValue;
+        };
+        provide('currentView', currentView);
+        provide('updateView', updateView);
+        return {
+            currentView,
+        };
     },
     data() {
         return store;
     },
-
     computed: {
         /**
          * This is a special aggregate array consisting of image data from
@@ -140,7 +145,6 @@ export default {
             ) {
                 await tosbur.showEmbeddedView(view);
             }
-            console.log(`switch view ${view}`);
             store.setView(view);
         },
         async configureContainer(val) {

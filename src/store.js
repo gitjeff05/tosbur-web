@@ -2,7 +2,6 @@ import { reactive } from 'vue';
 
 const store = {
     state: reactive({
-        view: 'images',
         dockerVersion: { name: 'Harry' },
         imagesInspect: [],
         images: [],

@@ -14,26 +14,31 @@ export default {
     },
     emits: ['changeview'],
     setup(props) {
-        const currentViewNow = inject('currentViewNow', 'search');
+        const currentView = inject('currentView');
+        const updateView = inject('updateView');
         const hasActiveContainer = computed(
             () => Object.keys(props.state.attachedContainer).length !== 0
         );
-        const isSearchActive = computed(() => props.state.view === 'search');
-        const isImagesActive = computed(() => props.state.view === 'images');
-        const isContainersActive = computed(
-            () => props.state.view === 'containers'
-        );
-        const isAttachedContainerActive = computed(
-            () => props.state.view === 'attached'
-        );
+
         return {
-            currentViewNow,
+            currentView,
+            updateView,
             hasActiveContainer,
-            isSearchActive,
-            isImagesActive,
-            isContainersActive,
-            isAttachedContainerActive,
         };
+    },
+    computed: {
+        isSearchActive() {
+            return this.currentView === 'search';
+        },
+        isImagesActive() {
+            return this.currentView === 'images';
+        },
+        isContainersActive() {
+            return this.currentView === 'containers';
+        },
+        isAttachedContainerActive() {
+            return this.currentView === 'attached';
+        },
     },
 };
 </script>
@@ -49,7 +54,7 @@ export default {
             role="button"
             tab-index="0"
             :class="{ active: isSearchActive }"
-            @click="$emit('changeview', 'search')"
+            @click="updateView('search')"
         >
             <i-carbon-search />
         </button>
@@ -62,7 +67,7 @@ export default {
             role="button"
             tab-index="1"
             :class="{ active: isImagesActive }"
-            @click="$emit('changeview', 'images')"
+            @click="updateView('images')"
         >
             <i-carbon-image-service />
         </button>
@@ -75,7 +80,7 @@ export default {
             role="button"
             tab-index="2"
             :class="{ active: isContainersActive }"
-            @click="$emit('changeview', 'containers')"
+            @click="updateView('containers')"
         >
             <i-carbon-container-software />
         </button>
@@ -88,7 +93,7 @@ export default {
             role="button"
             tab-index="3"
             :class="{ active: isAttachedContainerActive }"
-            @click="$emit('changeview', 'attached')"
+            @click="updateView('attached')"
         >
             <i-carbon-3rd-party-connected />
         </button>

@@ -16,7 +16,7 @@
 </template>
 
 <script>
-import { onUpdated } from 'vue';
+import { onUpdated, inject } from 'vue';
 import MainContentImageList from './MainContentImageList.vue';
 import MainContentContainerList from './MainContentContainerList.vue';
 export default {
@@ -25,11 +25,6 @@ export default {
         MainContentImageList,
     },
     props: {
-        currentView: {
-            type: String,
-            default: 'list',
-            required: false,
-        },
         images: {
             type: Array,
             default: () => {
@@ -52,13 +47,17 @@ export default {
         },
     },
     setup(props) {
+        const currentView = inject('currentView');
         onUpdated(() => {
             console.log(
                 `Switched view to ${
-                    props.currentView
+                    currentView.value
                 } and configuring ${JSON.stringify(props.configuringImage)}`
             );
         });
+        return {
+            currentView,
+        };
     },
 };
 </script>
